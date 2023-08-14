@@ -40,10 +40,6 @@ def ipScanner(host, value, timeout):
     down = 0
 
     arrayresult = []
-    # w = 4-int(value)
-    # for i in range(255):
-    #     createIp = ".".join(['.'.join(str(host).split(".")[0:w]), "{}".format(i)])
-    #     arrayresult.append(createIp)
     w = value
 
     arrayresult = []
