@@ -62,7 +62,7 @@ def ipScanner(host, value, timeout):
             
             if(p == 0):
                 getHostName = socket.gethostbyaddr(ip)[0]
-                print(colored("[+]", "green", attrs=['bold']), colored(ip, attrs=['bold']), " Host is up", colored(getHostName, "yellow", attrs=['dark', "bold"]))
+                print(colored("[+]", "green", attrs=['bold']), colored(ip, attrs=['bold']), " Host is up", colored(getHostName, "yellow", attrs=['dark', "bold"]), colored("(YOU)", "grey", attrs=['bold']) if str(ip) == str(iphost) else '')
                 up = up+1
             else:
                 #print(colored("[-]", "red", attrs=['bold']), colored(ip, attrs=['bold']), " Host is down")
@@ -85,15 +85,15 @@ if "__main__" == __name__:
     parser.add_argument('-t', type=str, default=0.2, help='Time-out in seconds per ip tested. (Default: 0.2)')
     args = parser.parse_args()
 
-    ip, mask = get_local_ip()
+    iphost, mask = get_local_ip()
     mask = "255.255.255.0"
-    print("Ip: ",colored(ip, "green", attrs=['bold']))
+    print("Ip: ",colored(iphost, "green", attrs=['bold']))
     print("Subnet mask: ",colored(mask, "yellow", attrs=['bold']))
     
     n255 = Counter(list(str(mask).replace(".", " ").split(" ")))['255']
     n0 = Counter(list(str(mask).replace(".", " ").split(" ")))['0']
     
-    ip2 = list(str(ip).replace(".", " ").split(" "))
+    ip2 = list(str(iphost).replace(".", " ").split(" "))
     ip2 = ip2[:-n0]
     ip2 = ".".join(ip2)
     
