@@ -11,7 +11,7 @@ To install Hscanner, follow these simple steps:
 1. Clone the Hscanner GitHub repository:
 
     ```shell
-    git clone https://github.com/hoag/hscanner.git
+    git clone https://github.com/H0ag/hscanner
     ```
     
 2. Navigate to the project directory:
