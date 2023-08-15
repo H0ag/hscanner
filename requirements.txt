@@ -1,2 +1,2 @@
-termcolor==1.1.0
+rich==10.12.0
 netifaces==0.11.0
