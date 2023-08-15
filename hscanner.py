@@ -3,7 +3,6 @@
 import socket
 import platform
 import subprocess
-from termcolor import colored
 import netifaces as ni
 from collections import Counter
 import time
