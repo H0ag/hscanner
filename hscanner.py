@@ -8,6 +8,9 @@ import netifaces as ni
 from collections import Counter
 import time
 import argparse
+from rich.progress import track
+from rich import print as print2
+
 
 def get_local_ip():
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -45,9 +48,10 @@ def ipScanner(host, value, timeout):
     arrayresult = []
     generate_ips(host, 4 - w)
 
+    prog_bar = len(arrayresult)
 
     try:
-        for ip in arrayresult:
+        for ip in track(arrayresult, description="Processing"):
             param = '-n' if platform.system().lower() == 'windows' else '-c'
             timeout = str(timeout)
             command = ['ping', param, '1', '-W', timeout, ip]
@@ -62,13 +66,21 @@ def ipScanner(host, value, timeout):
             
             if(p == 0):
                 getHostName = socket.gethostbyaddr(ip)[0]
-                print(colored("[+]", "green", attrs=['bold']), colored(ip, attrs=['bold']), " Host is up", colored(getHostName, "yellow", attrs=['dark', "bold"]), colored("(YOU)", "grey", attrs=['bold']) if str(ip) == str(iphost) else '')
+                output = (
+                    '[bold green][+][/bold green]'
+                    f'[bold white] {str(ip)} [/bold white]'
+                    ' Host is up'
+                    f'[yellow] {str(getHostName)}[/yellow]'
+                )
+                #print(colored("[+]", "green", attrs=['bold']), colored(ip, attrs=['bold']), " Host is up", colored(getHostName, "yellow", attrs=['dark', "bold"]), colored("(YOU)", "grey", attrs=['bold']) if str(ip) == str(iphost) else '')
+                print2(output, '[bold bright_black] (YOU)[/bold bright_black]' if str(ip) == str(iphost) else '')
                 up = up+1
             else:
                 #print(colored("[-]", "red", attrs=['bold']), colored(ip, attrs=['bold']), " Host is down")
                 down = down+1
             
             total = total+1
+
     except KeyboardInterrupt:
         print("\nScript interrupted by user.")
 
@@ -86,9 +98,8 @@ if "__main__" == __name__:
     args = parser.parse_args()
 
     iphost, mask = get_local_ip()
-    mask = "255.255.255.0"
     print("Ip: ",colored(iphost, "green", attrs=['bold']))
-    print("Subnet mask: ",colored(mask, "yellow", attrs=['bold']))
+    print("Subnet mask: ",colored(mask, "yellow", attrs=['bold']),"\n")
     
     n255 = Counter(list(str(mask).replace(".", " ").split(" ")))['255']
     n0 = Counter(list(str(mask).replace(".", " ").split(" ")))['0']
