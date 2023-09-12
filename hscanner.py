@@ -3,6 +3,7 @@
 import socket
 import platform
 import subprocess
+from termcolor import colored
 import netifaces as ni
 from collections import Counter
 import time
@@ -27,12 +28,58 @@ def get_local_ip():
         s.close()
     return ip, masque_cidr
 
-def generate_ips(prefix, remaining_octets):
-    if remaining_octets == 0:
-        arrayresult.append(prefix)
-        return
-    for i in range(256):
-        generate_ips(f"{prefix}.{i}", remaining_octets - 1)
+def convert_decimal_to_binary(ip):
+    octets = ip.split(".")
+    ipConverted = []
+    for octet in octets:
+        binaire = bin(int(octet))[2:].zfill(8)
+        octetIP = ""
+        for i in range(0, len(binaire), 4):
+            octetIP += binaire[i:i+4] + " "
+        ipConverted.append(binaire)
+    
+    return ''.join(ipConverted)
+    
+
+def generate_ips(ipv4, mask):
+    ipv4 = convert_decimal_to_binary(ipv4)
+    mask = convert_decimal_to_binary(mask)
+
+    etlogique = []
+    for i in range(8*4):
+        if ipv4[i] == "1" and mask[i] == "1":
+            etlogique.append("1")
+        else:
+            etlogique.append("0")
+
+    res = mask.count("0")
+    res = 2 ** res
+
+    print(f"Network ip ({colored('Binary', attrs=['bold'])}):", colored("".join(etlogique), "red", attrs=['bold']))
+    print(f"Network ip ({colored('Decimal', attrs=['bold'])}):", colored(socket.inet_ntoa(bytes(int("".join(etlogique)[i:i+8], 2) for i in range(0, 32, 8))), "red", attrs=['bold']))
+    print("Available ip:",res)
+    print("="*50)
+
+    # Adresse IP du réseau en décimal
+    network_ip_decimal = str(socket.inet_ntoa(bytes(int("".join(etlogique)[i:i+8], 2) for i in range(0, 32, 8))))
+
+    # Nombre d'adresses IP disponibles
+    num_available_ips = res
+
+    # Convertir l'adresse IP du réseau en une liste d'octets
+    network_ip_octets = [int(octet) for octet in network_ip_decimal.split('.')]
+
+    arrayresult.append("127.0.0.1")
+
+    # Générer toutes les adresses IP possibles dans la plage
+    for i in range(num_available_ips):
+        # Ajouter l'indice actuel à chaque octet de l'adresse IP du réseau
+        generated_ip_octets = [network_ip_octets[j] + (i >> (24 - j * 8) & 255) for j in range(4)]
+        
+        # Convertir les octets générés en format décimal
+        generated_ip_decimal = ".".join(map(str, generated_ip_octets))
+        
+        arrayresult.append(generated_ip_decimal)
 
 
 def ipScanner(host, value, timeout):
@@ -45,7 +92,7 @@ def ipScanner(host, value, timeout):
     w = value
 
     arrayresult = []
-    generate_ips(host, 4 - w)
+    generate_ips(host, value)
 
     prog_bar = len(arrayresult)
 
@@ -97,8 +144,10 @@ if "__main__" == __name__:
     args = parser.parse_args()
 
     iphost, mask = get_local_ip()
-    print("Ip: ",colored(iphost, "green", attrs=['bold']))
-    print("Subnet mask: ",colored(mask, "yellow", attrs=['bold']),"\n")
+    print(f"IpV4 ({colored('Binary', attrs=['bold'])}): ",colored(convert_decimal_to_binary(iphost), "green", attrs=['bold']))
+    print(f"IpV4 ({colored('Decimal', attrs=['bold'])}): ",colored(iphost, "green", attrs=['bold']))
+    print(f"Subnet mask ({colored('Binary', attrs=['bold'])}): ",colored(convert_decimal_to_binary(mask), "yellow", attrs=['bold']))
+    print(f"Subnet mask ({colored('Decimal', attrs=['bold'])}): ",colored(mask, "yellow", attrs=['bold']),"\n")
     
     n255 = Counter(list(str(mask).replace(".", " ").split(" ")))['255']
     n0 = Counter(list(str(mask).replace(".", " ").split(" ")))['0']
@@ -108,7 +157,7 @@ if "__main__" == __name__:
     ip2 = ".".join(ip2)
     
     start_time = time.time()
-    result = ipScanner(ip2, n255, args.t)
+    result = ipScanner(iphost, mask, args.t)
 
     print('='*50)
     print('RESULT :')
