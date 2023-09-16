@@ -127,13 +127,14 @@ def ipScanner(host, value, timeout):
             total = total+1
             if(func == "up"):
                 up = up+1
-                a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                for i in range(65535):
-                    location = (ip, i)
-                    result_of_check = a_socket.connect_ex(location)
-                    if result_of_check == 0:
-                        print2(f"[bright_black]↪ Port {i} is open.[/bright_black]")
-                a_socket.close()
+                if args.p:
+                    a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                    for i in range(65535):
+                        location = (ip, i)
+                        result_of_check = a_socket.connect_ex(location)
+                        if result_of_check == 0:
+                            print2(f"[bright_black]↪ Port {i} is open.[/bright_black]")
+                    a_socket.close()
             elif(func == "down"):
                 down = down+1
 
@@ -151,7 +152,18 @@ if "__main__" == __name__:
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', type=str, default=0.2, help='Time-out in seconds per ip tested. (Default: 0.2)')
+    parser.add_argument('-p', action='store_true', help='Scan open ports on hosts (BETA)')
     args = parser.parse_args()
+
+    print(colored("SELECTED ARGUMENTS:", attrs=['bold']))
+    if args.t != 0.2:
+        print(f"{colored('[+]', 'green', attrs=['bold'])} Custom timeout: {args.t}s")
+    if args.p:
+        print(f"{colored('[+]', 'green', attrs=['bold'])} Scan open ports on hosts")
+    if not args.p and args.t == 0.2:
+        print(f"{colored('[-]', 'red', attrs=['bold'])} NONE")
+
+    print("\n")
 
     iphost, mask = get_local_ip()
     print(f"IpV4 ({colored('Binary', attrs=['bold'])}): ",colored(convert_decimal_to_binary(iphost), "green", attrs=['bold']))
