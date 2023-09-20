@@ -93,13 +93,21 @@ def main(ip, timeout):
     p = ping_ip(ip, timeout)
 
     if(p == 0):
-        getHostName = socket.gethostbyaddr(ip)[0]
-        output = (
-            '[bold green][+][/bold green]'
-            f'[bold white] {str(ip)} [/bold white]'
-            ' Host is up'
-            f'[yellow] {str(getHostName)}[/yellow]'
-        )
+        try:
+            getHostName = socket.gethostbyaddr(ip)[0]
+            output = (
+                '[bold green][+][/bold green]'
+                f'[bold white] {str(ip)} [/bold white]'
+                ' Host is up'
+                f'[yellow] {str(getHostName)}[/yellow]'
+            )
+        except:
+            output = (
+                '[bold green][+][/bold green]'
+                f'[bold white] {str(ip)} [/bold white]'
+                ' Host is up'
+                f'[yellow] UNKNOW[/yellow]'
+            )
         print2(output, '[bold bright_black] (YOU)[/bold bright_black]' if str(ip) == str(iphost) else '')
         res = "up"
     else:
