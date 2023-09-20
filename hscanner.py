@@ -103,10 +103,10 @@ def main(ip, timeout):
             )
         except:
             output = (
-                '[bold green][+][/bold green]'
+                '[bold yellow][\][/bold yellow]'
                 f'[bold white] {str(ip)} [/bold white]'
                 ' Host is up'
-                f'[yellow] UNKNOW[/yellow]'
+                f'[yellow] ~UNKNOW~[/yellow]'
             )
         print2(output, '[bold bright_black] (YOU)[/bold bright_black]' if str(ip) == str(iphost) else '')
         res = "up"
