@@ -87,4 +87,12 @@ sudo apt-get install -y iputils-ping
 - The results of the scan will be displayed in the console, showing the number of hosts or ports tested, the number of them online and offline, and the total execution time.
 - This documentation is intended to help you get started with "hscanner". For more detailed information on the inner workings of the script, please refer to the "Code and libraries used" section in the source code.
 
+## Tip
+If you are on Linux, you can copy/paste hscanner.py to /usr/local/bin/ or ~/.local/bin/ without the file extention.
+And run the "chmod +x" command to make the file executable
+```bash
+sudo cp PATH/TO/HSCANNER/hscanner.py ~/.local/bin/hscanner && sudo chmod +x ~/.local/bin/hscanner
+```
+Now you can execute the command "hscanner" to run the script ;)
+
 Have fun using **hscanner** to explore and monitor your local network!
