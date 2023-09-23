@@ -57,10 +57,10 @@ def generate_ips(ipv4, mask):
     res = mask.count("0")
     res = 2 ** res
 
-    print(f"Network ip ({colored('Binary', attrs=['bold'])}):", colored("".join(etlogique), "red", attrs=['bold']))
-    print(f"Network ip ({colored('Decimal', attrs=['bold'])}):", colored(socket.inet_ntoa(bytes(int("".join(etlogique)[i:i+8], 2) for i in range(0, 32, 8))), "red", attrs=['bold']))
-    print("Available ip:",res)
-    print(colored('='*50, "grey", attrs=['bold']))
+    print(f"{colored('[i]', 'blue')} Network ip ({colored('Binary', attrs=['bold'])}):", colored("".join(etlogique), "red", attrs=['bold']))
+    print(f"{colored('[i]', 'blue')} Network ip ({colored('Decimal', attrs=['bold'])}):", colored(socket.inet_ntoa(bytes(int("".join(etlogique)[i:i+8], 2) for i in range(0, 32, 8))), "red", attrs=['bold']))
+    print(f"{colored('[i]', 'blue')} Available ip:",res)
+    print("")
 
     network_ip_decimal = str(socket.inet_ntoa(bytes(int("".join(etlogique)[i:i+8], 2) for i in range(0, 32, 8))))
 
@@ -143,7 +143,7 @@ def ipScanner(host, value, timeout):
                     up = up+1
                     if args.p:
                         a_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                        # a_socket.settimeout(0.1)
+                        a_socket.settimeout(0.1)
                         for i in range(65535):
                             location = (ip, i)
                             try:
@@ -191,11 +191,16 @@ def ipScanner(host, value, timeout):
     return up, down, total
 
 if "__main__" == __name__:
-    print("""██╗  ██╗███████╗ ██████╗ █████╗ ███╗   ██╗███╗   ██╗███████╗██████╗ \n██║  ██║██╔════╝██╔════╝██╔══██╗████╗  ██║████╗  ██║██╔════╝██╔══██╗\n███████║███████╗██║     ███████║██╔██╗ ██║██╔██╗ ██║█████╗  ██████╔╝\n██╔══██║╚════██║██║     ██╔══██║██║╚██╗██║██║╚██╗██║██╔══╝  ██╔══██╗\n██║  ██║███████║╚██████╗██║  ██║██║ ╚████║██║ ╚████║███████╗██║  ██║\n╚═╝  ╚═╝╚══════╝ ╚═════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝
-""")
-    print(colored("Made by Hoag.", "green", attrs=['bold']))
-    print(colored("Version: 1.2.1", "yellow", attrs=['bold']))
-    print(colored('='*50, "grey", attrs=['bold']))
+    print(f"""
+   .;'           ';.      
+ .;'  .;'    ';.   ';.    Hscanner
+.;'  .;'       ';.  ';.   {colored("Made by Hoag.", "green", attrs=['bold'])}
+::  ::    [+]    ::  ::   {colored("https://github.com/h0ag/", "green")}
+.;'  .;'   |   ';.  ';.   {colored("Version: 1.2.1", "yellow", attrs=['bold'])}
+ .;'  .;'  | ';.   ';.
+  .;'      |     ';.
+          ---
+    """)
 
     parser = argparse.ArgumentParser()
     parser.add_argument('-t', type=str, default=0.2, help='Time-out in seconds per ip tested. (Default: 0.2)')
@@ -217,8 +222,7 @@ if "__main__" == __name__:
         print(f"{colored('[+]', 'green', attrs=['bold'])} Scan open ports on {args.ip}")
     if not args.p and args.t == 0.2 and not args.ip:
         print(f"{colored('[-]', 'red', attrs=['bold'])} NONE")
-
-    print("\n")
+    print("")
 
     try:
         ping_ip("https://google.com", 0.2)
@@ -227,10 +231,10 @@ if "__main__" == __name__:
             exit(f"{colored('[-]', 'red', attrs=['bold'])} The ping command doesn't work. Try: {colored('sudo apt-get install -y iputils-ping', attrs=['bold'])}")
 
     iphost, mask = get_local_ip()
-    print(f"IpV4 ({colored('Binary', attrs=['bold'])}): ",colored(convert_decimal_to_binary(iphost), "green", attrs=['bold']))
-    print(f"IpV4 ({colored('Decimal', attrs=['bold'])}): ",colored(iphost, "green", attrs=['bold']))
-    print(f"Subnet mask ({colored('Binary', attrs=['bold'])}): ",colored(convert_decimal_to_binary(mask), "yellow", attrs=['bold']))
-    print(f"Subnet mask ({colored('Decimal', attrs=['bold'])}): ",colored(mask, "yellow", attrs=['bold']),"\n")
+    print(f"{colored('[i]', 'blue')} IpV4 ({colored('Binary', attrs=['bold'])}): ",colored(convert_decimal_to_binary(iphost), "green", attrs=['bold']))
+    print(f"{colored('[i]', 'blue')} IpV4 ({colored('Decimal', attrs=['bold'])}): ",colored(iphost, "green", attrs=['bold']))
+    print(f"{colored('[i]', 'blue')} Subnet mask ({colored('Binary', attrs=['bold'])}): ",colored(convert_decimal_to_binary(mask), "yellow", attrs=['bold']))
+    print(f"{colored('[i]', 'blue')} Subnet mask ({colored('Decimal', attrs=['bold'])}): ",colored(mask, "yellow", attrs=['bold']),"\n")
 
     n255 = Counter(list(str(mask).replace(".", " ").split(" ")))['255']
     n0 = Counter(list(str(mask).replace(".", " ").split(" ")))['0']
